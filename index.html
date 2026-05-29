@@ -1,0 +1,28 @@
+<button class="search-clear" id="search-clear" onclick="clearSearch()">✕</button>
+  </div>
+  <div class="result-count" id="result-count"></div>
+</div>
+
+<div class="tabs">
+  <button class="tab on" onclick="goTab('list')">📋 Danh Sách</button>
+  <button class="tab" onclick="goTab('add')">➕ Thêm Hàng</button>
+</div>
+
+<div id="pnl-list" class="pnl on">
+  <div class="products" id="product-grid">
+    <div class="empty"><div class="empty-icon">⏳</div><div class="empty-txt">Đang tải dữ liệu...</div></div>
+  </div>
+</div>
+
+<div id="pnl-add" class="pnl">
+  <div class="add-section">
+    <div class="form-card">
+      <div class="form-title">➕ Thêm / Cập Nhật Sản Phẩm</div>
+      <div class="fg full">
+        <label>Hình Ảnh <span class="opt">(không bắt buộc)</span></label>
+        <div class="img-upload" onclick="document.getElementById('file-input').click()">
+          <img id="img-preview" class="img-preview">
+          <div id="img-ph"><div class="img-icon">📷</div><div class="img-txt">Bấm để chọn / chụp ảnh</div></div>
+        </div>
+        <div style="display:flex;gap:7px;margin-top:6px;">
+          <button cla
