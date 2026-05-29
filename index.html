@@ -1,3 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tra Cứu Giá</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#f8f5f0;--sur:#ffffff;--sur2:#f2ede6;--bor:#e8e0d5;
+  --ink:#1c1917;--ink2:#78716c;--ink3:#a8a29e;
+  --grn:#16a34a;--grn-bg:#dcfce7;--red:#dc2626;--red-bg:#fee2e2;
+  --amber:#d97706;--amber-bg:#fef3c7;--acc:#0c4a6e;--acc-light:#e0f2fe;--r:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{max-width:100%;overflow-x:hidden;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
+
+.hero{background:var(--acc);padding:22px 16px 18px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(255,255,255,.06),transparent 60%);}
+.hero h1{font-size:1.35rem;font-weight:700;color:#fff;letter-spacing:-.02em;margin-bottom:2px;position:relative;}
+.hero p{color:rgba(255,255,255,.6);font-size:0.75rem;position:relative;}
+
+.sync-pill{display:flex;align-items:center;justify-content:center;gap:6px;margin:10px auto 0;background:rgba(255,255,255,.12);border-radius:20px;padding:5px 12px;width:fit-content;font-size:0.72rem;color:rgba(255,255,255,.8);}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:#fbbf24;}
+.sync-dot.ok{background:#34d399;animation:pulse 2s infinite;}
+.sync-dot.err{background:#f87171;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+
+.search-section{padding:14px;background:var(--acc);position:sticky;top:0;z-index:50;box-shadow:0 4px 20px rgba(12,74,110,.3);}
+.search-box{display:flex;align-items:center;background:#fff;border-radius:12px;padding:0 14px;gap:10px;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.search-box input{flex:1;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:0.93rem;padding:12px 0;background:transparent;color:var(--ink);}
+.search-box input::placeholder{color:var(--ink3);}
+.search-clear{background:none;border:none;cursor:pointer;color:var(--ink3);font-size:1.05rem;padding:4px;display:none;}
+.result-count{text-align:center;font-size:0.72rem;color:rgba(255,255,255,.6);margin-top:7px;}
+
+.tabs{display:flex;background:var(--sur);border-bottom:1px solid var(--bor);}
+.tab{flex:1;padding:11px 4px;text-align:center;font-size:0.77rem;font-weight:600;border:none;background:none;cursor:pointer;color:var(--ink2);font-family:inherit;border-bottom:2px solid transparent;transition:all .2s;}
+.tab.on{color:var(--acc);border-bottom-color:var(--acc);}
+.pnl{display:none;}.pnl.on{display:block;}
+
+.products{padding:12px;display:flex;flex-direction:column;gap:9px;}
+.product-card{background:var(--sur);border:1px solid var(--bor);border-radius:var(--r);overflow:hidden;display:flex;align-items:stretch;box-shadow:0 1px 4px rgba(0,0,0,.04);cursor:pointer;}
+.product-img{width:82px;min-height:82px;flex-shrink:0;background:var(--sur2);display:flex;align-items:center;justify-content:center;font-size:1.8rem;overflow:hidden;}
+.product-img img{width:100%;height:100%;object-fit:cover;}
+.product-body{flex:1;padding:10px 12px;min-width:0;}
+.product-name{font-weight:700;font-size:0.87rem;margin-bottom:2px;line-height:1.3;}
+.product-ma{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--ink3);background:var(--sur2);padding:1px 5px;border-radius:4px;display:inline-block;margin-bottom:7px;}
+.price-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.price-tag{display:flex;flex-direction:column;gap:1px;}
+.price-lbl{font-size:0.63rem;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;}
+.price-val{font-size:0.86rem;font-weight:700;font-family:'DM Mono',monospace;}
+.price-val.buy{color:var(--red);}
+.price-val.sell{color:var(--grn);}
+.price-divider{width:1px;height:26px;background:var(--bor);}
+.margin-badge{margin-left:auto;padding:2px 7px;border-radius:20px;font-size:0.68rem;font-weight:700;}
+.m-hi{background:var(--grn-bg);color:var(--grn);}
+.m-mid{background:var(--amber-bg);color:var(--amber);}
+.m-lo{background:var(--red-bg);color:var(--red);}
+.product-dvt{font-size:0.7rem;color:var(--ink3);margin-top:3px;}
+
+.add-section{padding:12px;}
+.form-card{background:var(--sur);border:1px solid var(--bor);border-radius:var(--r);padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.form-title{font-weight:700;font-size:0.88rem;color:var(--acc);margin-bottom:14px;}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:11px;}
+label{font-size:0.71rem;font-weight:600;color:var(--ink2);}
+.opt{font-size:0.66rem;color:var(--ink3);font-weight:400;}
+input{background:var(--sur2);border:1.5px solid var(--bor);border-radius:10px;color:var(--ink);padding:8px 11px;font-size:0.85rem;font-family:'DM Sans',sans-serif;outline:none;width:100%;transition:border-color .2s;}
+input:focus{border-color:var(--acc);background:#fff;}
+input::placeholder{color:var(--ink3);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.full{grid-column:1/-1;}
+
+.img-upload{border:2px dashed var(--bor);border-radius:12px;padding:18px;text-align:center;background:var(--sur2);transition:all .2s;cursor:pointer;}
+.img-upload:hover{border-color:var(--acc);}
+.img-preview{width:100%;max-height:150px;object-fit:cover;border-radius:8px;display:none;margin-bottom:8px;}
+.img-icon{font-size:1.8rem;margin-bottom:5px;}
+.img-txt{font-size:0.76rem;color:var(--ink2);font-weight:500;}
+
+.btn{padding:9px 16px;border-radius:10px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.84rem;font-weight:700;transition:all .15s;}
+.b-acc{background:var(--acc);color:#fff;box-shadow:0 3px 10px rgba(12,74,110,.2);}
+.b-acc:active{transform:scale(.97);}
+.b-gry{background:var(--sur2);color:var(--ink2);border:1.5px solid var(--bor);}
+.b-red{background:var(--red-bg);color:var(--red);border:1px solid #fca5a5;}
+.b-sm{padding:5px 9px;font-size:0.73rem;}
+.arow{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+
+.alert{padding:8px 12px;border-radius:10px;font-size:0.8rem;margin-top:8px;font-weight:600;}
+.a-grn{background:var(--grn-bg);color:var(--grn);border:1px solid #86efac;}
+.a-red{background:var(--red-bg);color:var(--red);border:1px solid #fca5a5;}
+
+.empty{text-align:center;padding:40px 20px;color:var(--ink3);}
+.empty-icon{font-size:2.5rem;margin-bottom:8px;opacity:.5;}
+.empty-txt{font-size:0.83rem;}
+
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px);}
+.modal-bg.open{display:flex;}
+.modal{background:var(--sur);border-radius:20px 20px 0 0;padding:22px 18px 30px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;animation:up .22s ease;}
+@keyframes up{from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.modal-handle{width:38px;height:4px;background:var(--bor);border-radius:2px;margin:0 auto 16px;}
+.modal-img{width:100%;height:160px;object-fit:cover;border-radius:12px;margin-bottom:12px;background:var(--sur2);display:flex;align-items:center;justify-content:center;font-size:3rem;overflow:hidden;}
+.modal-img img{width:100%;height:100%;object-fit:cover;}
+.modal-name{font-size:1.05rem;font-weight:800;margin-bottom:3px;}
+.modal-ma{font-family:'DM Mono',monospace;font-size:0.76rem;color:var(--ink3);margin-bottom:12px;}
+.price-cards{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px;}
+.pc{border-radius:12px;padding:12px;text-align:center;}
+.pc.buy{background:var(--red-bg);}
+.pc.sell{background:var(--grn-bg);}
+.pc .lbl{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+.pc.buy .lbl{color:var(--red);}
+.pc.sell .lbl{color:var(--grn);}
+.pc .val{font-size:1.05rem;font-weight:800;font-family:'DM Mono',monospace;}
+.pc.buy .val{color:var(--red);}
+.pc.sell .val{color:var(--grn);}
+.margin-info{background:var(--acc-light);border-radius:10px;padding:10px 13px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.margin-info .lbl{font-size:0.76rem;color:var(--acc);font-weight:600;}
+.margin-info .val{font-size:0.9rem;font-weight:800;color:var(--acc);font-family:'DM Mono',monospace;}
+.hl{background:#fef08a;border-radius:2px;}
+#file-input{display:none;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>🏷️ Tra Cứu Giá Hàng</h1>
+  <p>Đồng bộ realtime · Tất cả thiết bị</p>
+  <div class="sync-pill">
+    <div class="sync-dot" id="sync-dot"></div>
+    <span id="sync-txt">Đang kết nối...</span>
+  </div>
+</div>
+
+<div class="search-section">
+  <div class="search-box">
+    <span style="color:#94a3b8;font-size:1rem;">🔍</span>
+    <input type="text" id="search-inp" placeholder="Gõ tên hàng hoặc mã số..." oninput="doSearch()" autocomplete="off" autocorrect="off">
 <button class="search-clear" id="search-clear" onclick="clearSearch()">✕</button>
   </div>
   <div class="result-count" id="result-count"></div>
